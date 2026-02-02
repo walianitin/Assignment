@@ -9,7 +9,7 @@ import { useFilterContext } from "@/lib/context/filter-context";
 import { fetchIndicatorData, IndicatorType } from "@/lib/api/indicators";
 import { getApiCountryName } from "@/lib/utils/country-mapping";
 import { ChartBarMixed } from '../components/Bar-chart';
-import { ChartSkeleton } from "@/components/ui/skeletons";
+
 import { ChartDownloadButton } from "@/components/ui/chart-download-button";
 
 // Type for the simplified data we want to display
