@@ -8,6 +8,9 @@ import { X } from "lucide-react";
 import { useFilterContext } from "@/lib/context/filter-context";
 import { fetchIndicatorData, IndicatorType } from "@/lib/api/indicators";
 import { getApiCountryName } from "@/lib/utils/country-mapping";
+import { ChartBarMixed } from '../components/Bar-chart';
+import { ChartSkeleton } from "@/components/ui/skeletons";
+import { ChartDownloadButton } from "@/components/ui/chart-download-button";
 
 // Type for the simplified data we want to display
 interface CountryIndicatorData {
@@ -27,6 +30,7 @@ interface ApiDataItem {
 
 export default function WorldMap() {
   const chartRef = useRef(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
   const polygonSeriesRef = useRef<am5map.MapPolygonSeries | null>(null);
 
   const {
@@ -97,6 +101,7 @@ export default function WorldMap() {
   };
 
   const filteredData = getFilteredData();
+
   const hasAnyData = Object.values(filteredData).some((data) => data.length > 0);
 
   // Remove country from selection
@@ -187,15 +192,15 @@ export default function WorldMap() {
   }, [setSelectedCountries]);
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
       {/* Selected Countries */}
       {selectedCountries.length > 0 && (
-        <div className="mb-4 p-3 bg-slate-100 rounded-lg">
+        <div className="mb-4 p-4 bg-white rounded-xl shadow-md border border-slate-200 transform -translate-y-1">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-semibold">Selected Countries ({selectedCountries.length}):</span>
+            <span className="font-semibold text-gray-800">Selected Countries ({selectedCountries.length}):</span>
             <button
               onClick={clearAllSelections}
-              className="text-sm text-red-500 hover:text-red-700"
+              className="text-sm text-red-500 hover:text-red-700 font-medium transition-colors"
             >
               Clear All
             </button>
@@ -204,12 +209,12 @@ export default function WorldMap() {
             {selectedCountries.map((country, index) => (
               <span
                 key={`${country}-${index}`}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-full text-sm shadow-sm border border-blue-200"
               >
                 {country}
                 <button
                   onClick={() => removeCountry(country)}
-                  className="hover:bg-blue-200 rounded-full p-0.5"
+                  className="hover:bg-blue-200 rounded-full p-0.5 transition-colors"
                 >
                   <X size={14} />
                 </button>
@@ -221,17 +226,20 @@ export default function WorldMap() {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="mb-4 p-3 bg-yellow-100 rounded-lg text-center">
-          Loading data...
+        <div className="mb-4 p-4 bg-amber-50 rounded-xl shadow-md text-center border border-amber-200">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-amber-700 font-medium">Loading data...</span>
+          </div>
         </div>
       )}
 
       {/* Display Filtered Data */}
-      {selectedCountries.length > 0 && selectedFilters.length > 0 && !isLoading && (
-        <div className="mb-4 p-3 bg-green-50 rounded-lg">
-          <span className="font-semibold mb-2 block">Data for Selected Countries:</span>
+      {/* {selectedCountries.length > 0 && selectedFilters.length > 0 && !isLoading && (
+        <div className="mb-4 p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl shadow-md border border-emerald-200">
+          <span className="font-semibold mb-3 block text-emerald-800">Data for Selected Countries:</span>
           {!hasAnyData ? (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center shadow-sm">
               <span className="text-red-600 font-medium">
                 Data not available for the selected countries
               </span>
@@ -239,16 +247,16 @@ export default function WorldMap() {
           ) : (
             Object.entries(filteredData).map(([indicator, data]) => (
               <div key={indicator} className="mb-3">
-                <span className="text-sm font-medium text-gray-700">{indicator}:</span>
+                <span className="text-sm font-medium text-emerald-700">{indicator}:</span>
                 <div className="mt-1 space-y-1">
                   {data.length > 0 ? (
                     data.map((item, index) => (
                       <div
                         key={`${indicator}-${item.countryName}-${index}`}
-                        className="flex justify-between items-center bg-white p-2 rounded text-sm"
+                        className="flex justify-between items-center bg-white p-3 rounded-lg text-sm shadow-sm border border-emerald-100 hover:shadow-md transition-shadow"
                       >
-                        <span className="font-medium">{item.countryName}</span>
-                        <span className="text-blue-600 font-semibold">{item.value}</span>
+                        <span className="font-medium text-gray-700">{item.countryName}</span>
+                        <span className="text-emerald-600 font-bold">{item.value}</span>
                       </div>
                     ))
                   ) : (
@@ -261,13 +269,43 @@ export default function WorldMap() {
             ))
           )}
         </div>
-      )}
+      )} */}
 
-      <div
-        ref={chartRef}
-        id="chartRef"
-        style={{ width: "100%", height: "500px" }}
-      />
+      {/* Map Container with enhanced visuals */}
+      <div className="relative" ref={mapContainerRef}>
+        {/* Download button for map */}
+        <div className="absolute top-4 right-4 z-10">
+          <ChartDownloadButton 
+            chartRef={mapContainerRef} 
+            filename="world-bank-startup-index-map" 
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-100/50 to-transparent rounded-2xl transform translate-y-2 blur-xl"></div>
+        <div
+          ref={chartRef}
+          id="chartRef"
+          className="relative bg-gradient-to-br from-slate-50 via-white to-blue-50 rounded-2xl shadow-xl border border-slate-200 transform -translate-y-1 hover:shadow-2xl transition-all duration-300"
+          style={{ width: "100%", height: "500px" }}
+        />
+      </div>
+      
+      {/* Bar charts for each indicator */}
+      <div className="mt-6 space-y-4">
+        {hasAnyData && Object.entries(filteredData).map(([indicator, data]) => (
+          data.length > 0 && (
+            <div key={indicator} className="transform hover:-translate-y-1 transition-transform duration-200">
+              <ChartBarMixed
+                data={data.map((item) => ({
+                  countryName: item.countryName,
+                  value: parseFloat(item.value),
+                }))}
+                title={indicator}
+                description="Comparison across selected countries"
+              />
+            </div>
+          )
+        ))}
+      </div>
     </div>
   );
 }
