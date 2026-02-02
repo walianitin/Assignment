@@ -69,7 +69,7 @@ export function AppSidebar() {
       <SidebarHeader className="border-b pb-4 mt-2">
         <div className="flex items-center gap-2 px-2">
           <BarChart3 className="h-6 w-6 text-blue-600" />
-          <span className="text-xl font-bold text-gray-800">World Bank </span>
+          <span className="text-xl font-bold text-gray-800 dark:text-gray-300">World Bank </span>
         </div>
         <p className="text-xs text-gray-500 px-2 mt-1">World Bank Business Ready Indicators</p>
       </SidebarHeader>
@@ -96,7 +96,7 @@ export function AppSidebar() {
             </button>
             
             {isFiltersOpen && (
-              <div className="flex flex-col gap-1.5 animate-in slide-in-from-top-2 duration-200">
+              <div className="flex flex-col gap-1.5 animate-in slide-in-from-top-2 duration-200 ">
                 {filters.map((item) => {
                   const active = selectedFilters.includes(item)
 
@@ -104,7 +104,7 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       key={item}
                       onClick={() => toggleFilter(item)}
-                      className={`w-full justify-start rounded-md px-3 py-2 text-sm transition-all duration-200
+                      className={`w-full justify-start rounded-md px-3 py-2 text-sm transition-all duration-200 dark:bg-black dark:hover:text-white-100
                         ${active 
                           ? "bg-blue-100 text-blue-700 border-l-4 border-blue-500 font-medium" 
                           : "bg-gray-50 text-gray-600 hover:bg-gray-100 border-l-4 border-transparent"

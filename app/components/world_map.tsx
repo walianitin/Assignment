@@ -195,12 +195,13 @@ export default function WorldMap() {
     <div className="w-full p-4">
       {/* Selected Countries */}
       {selectedCountries.length > 0 && (
-        <div className="mb-4 p-4 bg-white rounded-xl shadow-md border border-slate-200 transform -translate-y-1">
+        <div className="mb-4 p-4 bg-white rounded-xl shadow-md border border-slate-200 transform -translate-y-1 dark:bg-black dark:hover:text-white dark:border-black">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-semibold text-gray-800">Selected Countries ({selectedCountries.length}):</span>
+            <span className="font-semibold text-gray-800 dark:text-gray-400">Selected Countries ({selectedCountries.length}):</span>
             <button
               onClick={clearAllSelections}
-              className="text-sm text-red-500 hover:text-red-700 font-medium transition-colors"
+              className="text-sm text-black dark:text-gray-400 dark:hover:text-gray-200
+              hover:text-red-700 font-medium transition-colors"
             >
               Clear All
             </button>
@@ -226,10 +227,10 @@ export default function WorldMap() {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="mb-4 p-4 bg-amber-50 rounded-xl shadow-md text-center border border-amber-200">
+        <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md text-center border border-gray-300 dark:border-gray-700">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-amber-700 font-medium">Loading data...</span>
+            <div className="w-4 h-4 border-2 border-blue-500 dark:border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">Loading data...</span>
           </div>
         </div>
       )}

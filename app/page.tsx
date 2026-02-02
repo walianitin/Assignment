@@ -20,7 +20,7 @@ export default function HomePage() {
                 World Bank
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight dark:text-gray-300">
               Startup Index
             </h1>
             <p className="text-lg text-gray-500 max-w-lg mx-auto">
@@ -30,7 +30,7 @@ export default function HomePage() {
                {/* CTA Button */}
           <button
             onClick={() => setShowMap(true)}
-            className="flex items-center gap-2 px-8 py-4 bg-linear-to-r from-gray-400 to-gray-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            className="flex items-center gap-2 px-8 py-4 bg-gray-800  text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
           >
             Go to Platform
             <ArrowRight className="h-5 w-5" />
@@ -42,7 +42,7 @@ export default function HomePage() {
               <Image 
                 src="/landing.png" 
                 alt="World Bank Startup Index" 
-                width={800} 
+                width={1000} 
                 height={400}
                 className="relative shadow-xl group-hover:scale-[1.02] transition-transform duration-300"
               />

@@ -4,6 +4,8 @@ import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/ui/App-sidebar"
 import { FilterProvider } from "@/lib/context/filter-context"
+import { ThemeProvider } from "../components/themeProviders";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,13 +32,16 @@ export default function DashboardLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ThemeProvider>
         <FilterProvider>
+          
           <SidebarProvider defaultOpen={true}>
             <div className="flex min-h-screen w-full">
               <AppSidebar />
               <main className="flex-1 flex flex-col">
-                <div className="p-2">
-                  <SidebarTrigger />
+                <div className="p-4 border-b flex items-center justify-between">
+                  <SidebarTrigger className="border rounded-md p-2 hover:bg-accent" />
+                  <ThemeToggle />
                 </div>
                 <div className="flex-1 flex items-center justify-center p-6">
                   {children}
@@ -45,6 +50,7 @@ export default function DashboardLayout({
             </div>
           </SidebarProvider>
         </FilterProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
