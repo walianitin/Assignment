@@ -74,7 +74,7 @@ export function ChartBarMixed({ data, title = "Country Data", description: desc 
   };
 
   // Dynamic height based on number of countries
-  const chartHeight = Math.max(100, data.length * 30 + 20);
+  const chartHeight = Math.max(100, data.length * 20 + 20);
 
   return (
     <Card className="mt-4" ref={chartContainerRef}>
@@ -98,18 +98,18 @@ export function ChartBarMixed({ data, title = "Country Data", description: desc 
             layout="vertical"
             margin={{
               left: 0,
-              right: 20,
+              right: 2,
             }}
-            barSize={20}
+            barSize={14}
           >
             <YAxis
               dataKey="country"
               type="category"
               tickLine={false}
-              tickMargin={8}
+              tickMargin={1}
               axisLine={false}
               width={100}
-              fontSize={11}
+              fontSize={8}
             />
             <XAxis dataKey="value" type="number" hide />
             <ChartTooltip

@@ -15,159 +15,88 @@ export function ChartDownloadButton({ chartRef, filename = "chart" }: ChartDownl
   const downloadAsPNG = async () => {
     if (!chartRef.current || isDownloading) return
     setIsDownloading(true)
+    setIsOpen(false)
 
     try {
-      const html2canvas = (await import("html2canvas")).default
+      const domtoimage = await import("dom-to-image-more")
       
-      // Clone the element to avoid modifying the original
-      const clone = chartRef.current.cloneNode(true) as HTMLElement
-      clone.style.position = 'absolute'
-      clone.style.left = '-9999px'
-      document.body.appendChild(clone)
-      
-      // Replace any problematic colors in the clone
-      const allElements = clone.querySelectorAll('*')
-      allElements.forEach((el) => {
-        const styles = window.getComputedStyle(el)
-        const element = el as HTMLElement
-        
-        // Get computed colors and apply them directly
-        if (styles.backgroundColor) {
-          element.style.backgroundColor = styles.backgroundColor
-        }
-        if (styles.color) {
-          element.style.color = styles.color
-        }
-        if (styles.borderColor) {
-          element.style.borderColor = styles.borderColor
-        }
+      const dataUrl = await domtoimage.toPng(chartRef.current, {
+        quality: 1,
+        bgcolor: "#ffffff",
       })
-
-      const canvas = await html2canvas(clone, {
-        backgroundColor: "#ffffff",
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        removeContainer: true,
-      })
-      
-      document.body.removeChild(clone)
       
       const link = document.createElement("a")
       link.download = `${filename}.png`
-      link.href = canvas.toDataURL("image/png")
+      link.href = dataUrl
       link.click()
     } catch (error) {
       console.error("Error downloading PNG:", error)
-      // Fallback: try with SVG export
-      fallbackDownload(filename, 'png')
+      alert("Failed to download. Please try taking a screenshot instead.")
     } finally {
       setIsDownloading(false)
     }
-    setIsOpen(false)
   }
 
   const downloadAsJPG = async () => {
     if (!chartRef.current || isDownloading) return
     setIsDownloading(true)
+    setIsOpen(false)
 
     try {
-      const html2canvas = (await import("html2canvas")).default
+      const domtoimage = await import("dom-to-image-more")
       
-      const clone = chartRef.current.cloneNode(true) as HTMLElement
-      clone.style.position = 'absolute'
-      clone.style.left = '-9999px'
-      document.body.appendChild(clone)
-      
-      const allElements = clone.querySelectorAll('*')
-      allElements.forEach((el) => {
-        const styles = window.getComputedStyle(el)
-        const element = el as HTMLElement
-        if (styles.backgroundColor) {
-          element.style.backgroundColor = styles.backgroundColor
-        }
-        if (styles.color) {
-          element.style.color = styles.color
-        }
+      const dataUrl = await domtoimage.toJpeg(chartRef.current, {
+        quality: 0.95,
+        bgcolor: "#ffffff",
       })
-
-      const canvas = await html2canvas(clone, {
-        backgroundColor: "#ffffff",
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      })
-      
-      document.body.removeChild(clone)
       
       const link = document.createElement("a")
       link.download = `${filename}.jpg`
-      link.href = canvas.toDataURL("image/jpeg", 0.9)
+      link.href = dataUrl
       link.click()
     } catch (error) {
       console.error("Error downloading JPG:", error)
-      fallbackDownload(filename, 'jpg')
+      alert("Failed to download. Please try taking a screenshot instead.")
     } finally {
       setIsDownloading(false)
     }
-    setIsOpen(false)
   }
 
   const downloadAsPDF = async () => {
     if (!chartRef.current || isDownloading) return
     setIsDownloading(true)
+    setIsOpen(false)
 
     try {
-      const html2canvas = (await import("html2canvas")).default
+      const domtoimage = await import("dom-to-image-more")
       const { jsPDF } = await import("jspdf")
       
-      const clone = chartRef.current.cloneNode(true) as HTMLElement
-      clone.style.position = 'absolute'
-      clone.style.left = '-9999px'
-      document.body.appendChild(clone)
-      
-      const allElements = clone.querySelectorAll('*')
-      allElements.forEach((el) => {
-        const styles = window.getComputedStyle(el)
-        const element = el as HTMLElement
-        if (styles.backgroundColor) {
-          element.style.backgroundColor = styles.backgroundColor
-        }
-        if (styles.color) {
-          element.style.color = styles.color
-        }
-      })
-
-      const canvas = await html2canvas(clone, {
-        backgroundColor: "#ffffff",
-        scale: 2,
-        useCORS: true,
-        logging: false,
+      const dataUrl = await domtoimage.toPng(chartRef.current, {
+        quality: 1,
+        bgcolor: "#ffffff",
       })
       
-      document.body.removeChild(clone)
+      const img = new Image()
+      img.src = dataUrl
       
-      const imgData = canvas.toDataURL("image/png")
+      await new Promise((resolve) => {
+        img.onload = resolve
+      })
+      
       const pdf = new jsPDF({
-        orientation: canvas.width > canvas.height ? "landscape" : "portrait",
+        orientation: img.width > img.height ? "landscape" : "portrait",
         unit: "px",
-        format: [canvas.width, canvas.height],
+        format: [img.width, img.height],
       })
       
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height)
+      pdf.addImage(dataUrl, "PNG", 0, 0, img.width, img.height)
       pdf.save(`${filename}.pdf`)
     } catch (error) {
       console.error("Error downloading PDF:", error)
-      fallbackDownload(filename, 'pdf')
+      alert("Failed to download. Please try taking a screenshot instead.")
     } finally {
       setIsDownloading(false)
     }
-    setIsOpen(false)
-  }
-
-  // Fallback for when html2canvas fails
-  const fallbackDownload = (name: string, format: string) => {
-    alert(`Unable to download as ${format.toUpperCase()}. Please try taking a screenshot instead.`)
   }
 
   return (
@@ -196,19 +125,19 @@ export function ChartDownloadButton({ chartRef, filename = "chart" }: ChartDownl
               onClick={downloadAsPNG}
               className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 transition-colors"
             >
-              Download PNG
+              PNG
             </button>
             <button
               onClick={downloadAsJPG}
               className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 transition-colors"
             >
-              Download JPG
+              JPG
             </button>
             <button
               onClick={downloadAsPDF}
               className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 transition-colors"
             >
-              Download PDF
+              PDF
             </button>
           </div>
         </>

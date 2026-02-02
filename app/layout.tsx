@@ -31,7 +31,7 @@ export default function DashboardLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <FilterProvider>
-          <SidebarProvider>
+          <SidebarProvider defaultOpen={true}>
             <div className="flex min-h-screen w-full">
               <AppSidebar />
               <main className="flex-1 flex flex-col">
