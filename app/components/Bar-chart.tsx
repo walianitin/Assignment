@@ -54,6 +54,7 @@ export function ChartBarMixed({ data, title = "Country Data", description: desc 
   const chartData = data.map((item, index) => ({
     country: item.countryName,
     value: item.value,
+    displayValue: item.value === 0 ? "N/A" : item.value.toString(),
     fill: CHART_COLORS[index % CHART_COLORS.length],
   }));
 
@@ -114,7 +115,13 @@ export function ChartBarMixed({ data, title = "Country Data", description: desc 
             <XAxis dataKey="value" type="number" hide />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent 
+                hideLabel 
+                formatter={(value) => {
+                  const numValue = Number(value);
+                  return numValue === 0 ? "N/A" : value;
+                }}
+              />}
             />
             <Bar dataKey="value" layout="vertical" radius={4} />
           </BarChart>
